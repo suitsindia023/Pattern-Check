@@ -184,10 +184,24 @@ const OrderDetail = () => {
       });
       setChatMessage('');
       setChatImage(null);
+      setChatImagePreview(null);
       setQuotedMessage(null);
+      
+      // Reset file input
+      const fileInput = document.getElementById('chat-image-input');
+      if (fileInput) fileInput.value = '';
+      
       fetchChats();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to send message');
+    }
+  };
+
+  const handleChatImageSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setChatImage(file);
+      setChatImagePreview(file.name);
     }
   };
 
