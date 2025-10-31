@@ -374,14 +374,18 @@ async def approve_reject_order(order_id: str, action: ApprovalAction, current_us
     if current_user.role not in ["admin", "pattern_checker"]:
         raise HTTPException(status_code=403, detail="Permission denied")
     
-    if action.stage not in ["second", "approved"]:
+    if action.stage not in ["initial", "second", "approved"]:
         raise HTTPException(status_code=400, detail="Invalid stage")
     
     if action.status not in ["approved", "rejected"]:
         raise HTTPException(status_code=400, detail="Invalid status")
     
     update_data = {}
-    if action.stage == "second":
+    if action.stage == "initial":
+        update_data["initial_pattern_status"] = action.status
+        if not (await db.orders.find_one({"id": order_id})).get("initial_pattern_date"):
+            update_data["initial_pattern_date"] = datetime.now(timezone.utc).isoformat()
+    elif action.stage == "second":
         update_data["second_pattern_status"] = action.status
         update_data["second_pattern_date"] = datetime.now(timezone.utc).isoformat()
     else:
