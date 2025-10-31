@@ -492,11 +492,15 @@ async def approve_reject_order(order_id: str, action: ApprovalAction, current_us
 @api_router.post("/orders/{order_id}/chat")
 async def send_message(
     order_id: str,
-    message: str = Form(...),
+    message: str = Form(""),
     image: Optional[UploadFile] = File(None),
     quoted_message_id: Optional[str] = Form(None),
     current_user: User = Depends(get_current_user)
 ):
+    # Validate that at least message or image is provided
+    if not message.strip() and not image:
+        raise HTTPException(status_code=400, detail="Message or image is required")
+    
     # Check permissions for image upload
     if image and current_user.role not in ["admin", "pattern_maker", "pattern_checker"]:
         raise HTTPException(status_code=403, detail="Only Pattern Maker and Pattern Checker can upload images")
