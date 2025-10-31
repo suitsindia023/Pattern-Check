@@ -170,7 +170,7 @@ const OrderDetail = () => {
     if (!chatMessage.trim() && !chatImage) return;
 
     const formData = new FormData();
-    formData.append('message', chatMessage);
+    formData.append('message', chatMessage || '');
     if (chatImage) {
       formData.append('image', chatImage);
     }
