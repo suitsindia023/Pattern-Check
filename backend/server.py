@@ -316,6 +316,32 @@ async def update_order(order_id: str, order_data: OrderUpdate, current_user: Use
         order['created_at'] = datetime.fromisoformat(order['created_at'])
     return Order(**order)
 
+@api_router.delete("/orders/{order_id}")
+async def delete_order(order_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Delete all patterns associated with this order
+    patterns = await db.patterns.find({"order_id": order_id}).to_list(1000)
+    for pattern in patterns:
+        try:
+            from bson import ObjectId
+            await fs.delete(ObjectId(pattern['file_id']))
+        except:
+            pass  # Continue even if file deletion fails
+    
+    await db.patterns.delete_many({"order_id": order_id})
+    
+    # Delete all chats for this order
+    await db.chats.delete_many({"order_id": order_id})
+    
+    # Delete the order
+    result = await db.orders.delete_one({"id": order_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Order deleted successfully"}
+
 # Pattern endpoints
 @api_router.post("/orders/{order_id}/patterns")
 async def upload_pattern(
