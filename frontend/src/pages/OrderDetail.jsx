@@ -110,7 +110,7 @@ const OrderDetail = () => {
   };
 
   const handleDeletePattern = async (patternId, stage, slot) => {
-    if (!window.confirm('Are you sure you want to delete this pattern?')) {
+    if (!window.confirm('Are you sure you want to delete this pattern? This action cannot be undone.')) {
       return;
     }
 
