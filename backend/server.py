@@ -539,7 +539,7 @@ async def get_chat_image(image_id: str, current_user: User = Depends(get_current
             io.BytesIO(contents),
             media_type="image/jpeg"
         )
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=404, detail="Image not found")
 
 app.include_router(api_router)
