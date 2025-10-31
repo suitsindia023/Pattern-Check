@@ -184,6 +184,7 @@ const OrderDetail = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {[1, 2, 3, 4, 5].map(slot => {
           const pattern = stagePatterns.find(p => p.slot === slot);
+          const selectedFileName = selectedFiles[`${stage}-${slot}`];
           
           return (
             <Card key={slot} className="border-slate-200">
@@ -204,12 +205,24 @@ const OrderDetail = () => {
                       data-testid={`download-${stage}-${slot}`}
                       size="sm"
                       variant="outline"
-                      className="w-full"
+                      className="w-full border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400"
                       onClick={() => handleDownload(pattern.id, pattern.filename)}
                     >
                       <Download className="w-3.5 h-3.5 mr-1.5" />
                       Download
                     </Button>
+                    {isAdmin && (
+                      <Button
+                        data-testid={`delete-${stage}-${slot}`}
+                        size="sm"
+                        variant="outline"
+                        className="w-full border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400"
+                        onClick={() => handleDeletePattern(pattern.id, stage, slot)}
+                      >
+                        <X className="w-3.5 h-3.5 mr-1.5" />
+                        Delete
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -220,7 +233,13 @@ const OrderDetail = () => {
                           data-testid={`upload-input-${stage}-${slot}`}
                           type="file"
                           className="text-xs"
+                          onChange={(e) => handleFileSelect(e, stage, slot)}
                         />
+                        {selectedFileName && (
+                          <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded truncate">
+                            {selectedFileName}
+                          </div>
+                        )}
                         <Button
                           data-testid={`upload-${stage}-${slot}`}
                           size="sm"
