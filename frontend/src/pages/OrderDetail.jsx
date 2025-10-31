@@ -354,29 +354,8 @@ const OrderDetail = () => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 {renderPatternSlots('approved', patterns.approved, canUploadSecondApproved)}
-                
-                {canApprove && !order?.approved_pattern_status && (
-                  <div className="flex gap-2 pt-4 border-t border-slate-200">
-                    <Button
-                      data-testid="approve-final"
-                      className="flex-1 bg-green-600 hover:bg-green-700"
-                      onClick={() => handleApproval('approved', 'approved')}
-                    >
-                      <Check className="w-4 h-4 mr-1.5" />
-                      Final Approve
-                    </Button>
-                    <Button
-                      data-testid="reject-final"
-                      className="flex-1 bg-red-600 hover:bg-red-700"
-                      onClick={() => handleApproval('approved', 'rejected')}
-                    >
-                      <X className="w-4 h-4 mr-1.5" />
-                      Reject
-                    </Button>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
