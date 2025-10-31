@@ -329,6 +329,18 @@ const OrderDetail = () => {
                 View Google Sheet <ExternalLink className="w-3 h-3" />
               </a>
             </div>
+            {isAdmin && (
+              <Button
+                data-testid="delete-order-button"
+                variant="outline"
+                size="sm"
+                className="border-red-300 text-red-700 hover:bg-red-50"
+                onClick={handleDeleteOrder}
+              >
+                <X className="w-4 h-4 mr-1.5" />
+                Delete Order
+              </Button>
+            )}
           </div>
         </div>
       </header>
