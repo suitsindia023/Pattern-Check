@@ -173,6 +173,9 @@ const OrderDetail = () => {
     if (chatImage) {
       formData.append('image', chatImage);
     }
+    if (quotedMessage) {
+      formData.append('quoted_message_id', quotedMessage.id);
+    }
 
     try {
       await axios.post(`${API}/orders/${orderId}/chat`, formData, {
@@ -180,6 +183,7 @@ const OrderDetail = () => {
       });
       setChatMessage('');
       setChatImage(null);
+      setQuotedMessage(null);
       fetchChats();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to send message');
