@@ -195,6 +195,23 @@ class PatternMakerAPITester:
         """Test order creation and management"""
         print("\n🔍 Testing Order Management...")
 
+        # Check admin user role first
+        if self.tokens.get('admin'):
+            success, response = self.run_test(
+                "Check admin role for order creation",
+                "GET",
+                "auth/me",
+                200,
+                token=self.tokens['admin']
+            )
+            if success:
+                admin_role = response.get('role', 'unknown')
+                print(f"Admin user role: {admin_role}")
+                if admin_role not in ['admin', 'order_uploader']:
+                    print(f"⚠️  User role '{admin_role}' cannot create orders. Skipping order creation tests.")
+                    self.log_test("Order creation test", False, f"User role '{admin_role}' lacks permission")
+                    return
+
         # Test order creation by admin
         if self.tokens.get('admin'):
             success, response = self.run_test(
