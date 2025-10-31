@@ -28,6 +28,7 @@ const OrderDetail = () => {
   const [chatMessage, setChatMessage] = useState('');
   const [chatImage, setChatImage] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState({});
+  const [quotedMessage, setQuotedMessage] = useState(null);
 
   useEffect(() => {
     fetchOrderData();
