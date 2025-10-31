@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-10-31T11:23:19.397168",
+  "total_tests": 9,
+  "passed_tests": 7,
+  "success_rate": 77.77777777777779,
+  "test_details": [
+    {
+      "test": "User registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "User login",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get current user info",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Invalid login (should fail)",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get orders (authenticated)",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get users (general user - should fail)",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Create order (general user - should fail)",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get orders (no auth - should fail)",
+      "success": false,
+      "details": "Expected 401, got 403 - Not authenticated"
+    },
+    {
+      "test": "Get user info (no auth - should fail)",
+      "success": false,
+      "details": "Expected 401, got 403 - Not authenticated"
+    }
+  ],
+  "limitations": [
+    "Admin role assignment requires manual database intervention",
+    "Full workflow testing requires pre-existing admin user",
+    "File upload testing requires order creation permissions"
+  ]
+}
