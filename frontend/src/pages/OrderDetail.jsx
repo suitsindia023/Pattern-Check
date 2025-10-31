@@ -185,6 +185,20 @@ const OrderDetail = () => {
     }
   };
 
+  const handleDeleteOrder = async () => {
+    if (!window.confirm('Are you sure you want to delete this entire order? This will delete all patterns and chats. This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/orders/${orderId}`);
+      toast.success('Order deleted successfully!');
+      navigate('/');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to delete order');
+    }
+  };
+
   const canUploadInitial = user?.role === 'admin' || user?.role === 'pattern_maker';
   const canUploadSecondApproved = user?.role === 'admin' || user?.role === 'pattern_checker';
   const canApprove = user?.role === 'admin' || user?.role === 'pattern_checker';
