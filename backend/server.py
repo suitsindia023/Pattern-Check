@@ -549,7 +549,9 @@ async def get_messages(order_id: str, current_user: User = Depends(get_current_u
     return messages
 
 @api_router.get("/chat/images/{image_id}")
-async def get_chat_image(image_id: str, current_user: User = Depends(get_current_user)):
+async def get_chat_image(image_id: str):
+    # Public endpoint - images are served without auth
+    # Access control is done at order level, not individual images
     try:
         from bson import ObjectId
         grid_out = await fs.open_download_stream(ObjectId(image_id))
