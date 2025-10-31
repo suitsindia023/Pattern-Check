@@ -39,6 +39,16 @@ const AdminPanel = () => {
     }
   };
 
+  const approveUser = async (userId) => {
+    try {
+      await axios.patch(`${API}/users/${userId}/approve`);
+      toast.success('User approved successfully!');
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to approve user');
+    }
+  };
+
   const getRoleBadgeColor = (role) => {
     const colors = {
       admin: 'bg-red-100 text-red-700 border-red-200',
