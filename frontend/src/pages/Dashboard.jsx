@@ -224,8 +224,11 @@ const Dashboard = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-slate-600">Initial Pattern:</span>
-                      <Badge variant={order.initial_pattern_date ? "default" : "secondary"} className="text-xs">
-                        {order.initial_pattern_date ? 'Uploaded' : 'Pending'}
+                      <Badge 
+                        variant={order.initial_pattern_status === 'approved' ? 'default' : order.initial_pattern_status === 'rejected' ? 'destructive' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {order.initial_pattern_status || (order.initial_pattern_date ? 'Uploaded' : 'Pending')}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between text-sm">
