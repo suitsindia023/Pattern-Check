@@ -131,9 +131,31 @@ class PatternMakerAPITester:
         """Test admin user management functionality"""
         print("\n🔍 Testing Admin User Management...")
         
-        if not self.tokens.get('admin'):
-            self.log_test("Admin user management", False, "No admin token available")
-            return
+        # First, manually assign admin role to the first registered user
+        # Since all users start as general_user, we need to manually promote one to admin
+        print("Note: All users register as 'general_user' by default. Need manual admin assignment.")
+        
+        # Check current user role
+        if self.tokens.get('admin'):
+            success, response = self.run_test(
+                "Check admin user role",
+                "GET",
+                "auth/me",
+                200,
+                token=self.tokens['admin']
+            )
+            if success:
+                current_role = response.get('role', 'unknown')
+                print(f"Current user role: {current_role}")
+                self.log_test(f"Check admin user role (currently: {current_role})", success, "")
+                
+                # If user is not admin, we can't test admin functions
+                if current_role != 'admin':
+                    self.log_test("Admin user management", False, f"User role is '{current_role}', not 'admin'. Manual role assignment needed.")
+                    return
+            else:
+                self.log_test("Check admin user role", success, response)
+                return
 
         # Test getting all users (admin only)
         success, response = self.run_test(
