@@ -494,6 +494,7 @@ async def send_message(
     order_id: str,
     message: str = Form(...),
     image: Optional[UploadFile] = File(None),
+    quoted_message_id: Optional[str] = Form(None),
     current_user: User = Depends(get_current_user)
 ):
     # Check permissions for image upload
@@ -509,12 +510,24 @@ async def send_message(
             metadata={"order_id": order_id, "type": "chat_image"}
         ))
     
+    # Get quoted message if provided
+    quoted_message_text = None
+    quoted_user_name = None
+    if quoted_message_id:
+        quoted_msg = await db.chats.find_one({"id": quoted_message_id}, {"_id": 0})
+        if quoted_msg:
+            quoted_message_text = quoted_msg.get('message')
+            quoted_user_name = quoted_msg.get('user_name')
+    
     chat_msg = ChatMessage(
         order_id=order_id,
         user_id=current_user.id,
         user_name=current_user.name,
         message=message,
-        image_id=image_id
+        image_id=image_id,
+        quoted_message_id=quoted_message_id,
+        quoted_message_text=quoted_message_text,
+        quoted_user_name=quoted_user_name
     )
     
     chat_doc = chat_msg.model_dump()
