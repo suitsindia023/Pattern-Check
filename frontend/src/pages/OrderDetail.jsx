@@ -569,6 +569,21 @@ const OrderDetail = () => {
                 
                 <div className="p-4 border-t border-slate-200">
                   <form onSubmit={handleSendMessage} className="space-y-2">
+                    {quotedMessage && (
+                      <div className="bg-blue-50 border-l-2 border-blue-500 p-2 rounded text-sm flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="font-semibold text-blue-900">Replying to {quotedMessage.user}</div>
+                          <div className="text-slate-600 truncate">{quotedMessage.text}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setQuotedMessage(null)}
+                          className="text-slate-400 hover:text-slate-600 ml-2"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                     <Textarea
                       data-testid="chat-input"
                       placeholder="Type your message..."
