@@ -149,10 +149,14 @@ async def register(user_data: UserCreate):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    # Check if this is the first user - make them admin
+    user_count = await db.users.count_documents({})
+    role = "admin" if user_count == 0 else "general_user"
+    
     user = User(
         email=user_data.email,
         name=user_data.name,
-        role="general_user"  # Default role, admin will assign
+        role=role
     )
     
     user_doc = user.model_dump()
