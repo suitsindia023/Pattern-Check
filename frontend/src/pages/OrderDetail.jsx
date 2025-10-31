@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { ArrowLeft, Upload, Download, MessageSquare, Check, X, ExternalLink, Image as ImageIcon, Send, FileText } from 'lucide-react';
+import { ArrowLeft, Upload, Download, MessageSquare, Check, X, ExternalLink, Image as ImageIcon, Send, FileText, Reply } from 'lucide-react';
 
 const OrderDetail = () => {
   const { orderId } = useParams();
