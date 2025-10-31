@@ -67,6 +67,7 @@ class Order(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by: str
     initial_pattern_date: Optional[str] = None
+    initial_pattern_status: Optional[str] = None  # approved, rejected
     second_pattern_status: Optional[str] = None  # approved, rejected
     second_pattern_date: Optional[str] = None
     approved_pattern_status: Optional[str] = None  # approved, rejected
