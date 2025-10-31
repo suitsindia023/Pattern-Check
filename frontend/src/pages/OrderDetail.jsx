@@ -266,11 +266,21 @@ const OrderDetail = () => {
                     <CardTitle>Initial Patterns</CardTitle>
                     <CardDescription>Pattern Maker uploads initial patterns</CardDescription>
                   </div>
-                  {order?.initial_pattern_date && (
-                    <Badge variant="secondary" className="text-xs">
-                      {new Date(order.initial_pattern_date).toLocaleDateString()}
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {order?.initial_pattern_date && (
+                      <Badge variant="secondary" className="text-xs">
+                        {new Date(order.initial_pattern_date).toLocaleDateString()}
+                      </Badge>
+                    )}
+                    {order?.initial_pattern_status && (
+                      <Badge 
+                        variant={order.initial_pattern_status === 'approved' ? 'default' : 'destructive'}
+                        className="text-xs capitalize"
+                      >
+                        {order.initial_pattern_status}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
