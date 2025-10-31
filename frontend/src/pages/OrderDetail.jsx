@@ -142,6 +142,18 @@ const OrderDetail = () => {
   };
 
   const handleApproval = async (stage, status) => {
+    const stageNames = {
+      initial: 'Initial Pattern',
+      second: 'Second Pattern Review',
+      approved: 'Final Approved Pattern'
+    };
+    
+    const confirmMessage = `Are you sure you want to ${status} ${stageNames[stage]}?`;
+    
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+    
     try {
       await axios.post(`${API}/orders/${orderId}/approve`, { stage, status });
       toast.success(`Order ${status} successfully!`);
