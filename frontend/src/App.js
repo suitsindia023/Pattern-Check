@@ -61,7 +61,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-          <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/" element={user ? <NewDashboard /> : <Navigate to="/login" />} />
+          <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" />} />
           <Route path="/order/:orderId" element={user ? <OrderDetail /> : <Navigate to="/login" />} />
           <Route path="/admin" element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/" />} />
         </Routes>
