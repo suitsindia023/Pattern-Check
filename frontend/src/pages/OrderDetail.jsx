@@ -653,6 +653,27 @@ const OrderDetail = () => {
           </div>
         </div>
       </main>
+
+      {/* Image Viewer Dialog */}
+      {viewingImage && (
+        <Dialog open={!!viewingImage} onOpenChange={() => setViewingImage(null)}>
+          <DialogContent className="max-w-4xl p-0 bg-transparent border-none">
+            <div className="relative">
+              <img
+                src={viewingImage}
+                alt="Full size"
+                className="w-full h-auto rounded-lg"
+              />
+              <button
+                onClick={() => setViewingImage(null)}
+                className="absolute top-2 right-2 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
