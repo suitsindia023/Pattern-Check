@@ -531,7 +531,12 @@ const OrderDetail = () => {
                           )}
                         </div>
                         <div className="text-xs text-slate-400 mt-1">
-                          {new Date(chat.created_at).toLocaleTimeString()}
+                          {typeof chat.created_at === 'string' 
+                            ? new Date(chat.created_at).toLocaleTimeString()
+                            : chat.created_at?.toLocaleTimeString 
+                              ? chat.created_at.toLocaleTimeString()
+                              : 'Just now'
+                          }
                         </div>
                       </div>
                     ))}
