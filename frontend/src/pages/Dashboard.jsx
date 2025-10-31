@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Plus, LogOut, Settings, FileText, Calendar } from 'lucide-react';
+import { Plus, LogOut, Settings, FileText, Calendar, Shield } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
