@@ -188,7 +188,6 @@ const OrderDetail = () => {
                           id={`file-${stage}-${slot}`}
                           data-testid={`upload-input-${stage}-${slot}`}
                           type="file"
-                          accept=".zip,.dxf"
                           className="text-xs"
                         />
                         <Button
