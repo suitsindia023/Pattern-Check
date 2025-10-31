@@ -177,6 +177,7 @@ const OrderDetail = () => {
   const canUploadSecondApproved = user?.role === 'admin' || user?.role === 'pattern_checker';
   const canApprove = user?.role === 'admin' || user?.role === 'pattern_checker';
   const canUploadChatImage = user?.role === 'admin' || user?.role === 'pattern_maker' || user?.role === 'pattern_checker';
+  const isAdmin = user?.role === 'admin';
 
   const renderPatternSlots = (stage, stagePatterns, canUpload) => {
     return (
