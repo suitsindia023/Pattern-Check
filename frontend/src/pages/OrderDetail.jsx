@@ -557,7 +557,8 @@ const OrderDetail = () => {
                             <img
                               src={`${API}/chat/images/${chat.image_id}`}
                               alt="Chat"
-                              className="mt-2 rounded max-w-full"
+                              className="mt-2 rounded max-w-full cursor-pointer hover:opacity-90 transition-opacity"
+                              onClick={() => setViewingImage(`${API}/chat/images/${chat.image_id}`)}
                             />
                           )}
                           
