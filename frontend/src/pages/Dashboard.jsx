@@ -196,17 +196,28 @@ const Dashboard = () => {
           </div>
         ) : orders.length === 0 ? (
           <Card className="text-center py-16">
-            <FileText className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No orders yet</h3>
-            <p className="text-slate-500 mb-6">Get started by creating your first order</p>
-            {canCreateOrder && (
-              <Button 
-                onClick={() => setDialogOpen(true)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-              >
-                <Plus className="w-4 h-4 mr-1.5" />
-                Create First Order
-              </Button>
+            {!user?.is_approved && user?.role !== 'admin' ? (
+              <>
+                <Shield className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">Account Pending Approval</h3>
+                <p className="text-slate-500 mb-2">Your account is awaiting admin approval.</p>
+                <p className="text-slate-500">You'll be able to access orders once your account is approved.</p>
+              </>
+            ) : (
+              <>
+                <FileText className="w-16 h-16 mx-auto text-slate-300 mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">No orders yet</h3>
+                <p className="text-slate-500 mb-6">Get started by creating your first order</p>
+                {canCreateOrder && (
+                  <Button 
+                    onClick={() => setDialogOpen(true)}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    Create First Order
+                  </Button>
+                )}
+              </>
             )}
           </Card>
         ) : (
