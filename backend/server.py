@@ -160,14 +160,22 @@ async def register(user_data: UserCreate):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Check if this is the first user - make them admin
+    # Check if this is the first user - make them admin and auto-approve
     user_count = await db.users.count_documents({})
-    role = "admin" if user_count == 0 else "general_user"
+    is_first_user = user_count == 0
+    role = "admin" if is_first_user else "general_user"
+    
+    # Generate verification code
+    import random
+    verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
     
     user = User(
         email=user_data.email,
         name=user_data.name,
-        role=role
+        role=role,
+        is_approved=is_first_user,  # First user is auto-approved
+        is_email_verified=is_first_user,  # First user is auto-verified for testing
+        verification_code=verification_code if not is_first_user else None
     )
     
     user_doc = user.model_dump()
@@ -175,6 +183,11 @@ async def register(user_data: UserCreate):
     user_doc['password'] = hash_password(user_data.password)
     
     await db.users.insert_one(user_doc)
+    
+    # TODO: Send verification email with code
+    # For now, just log it
+    if not is_first_user:
+        logger.info(f"Verification code for {user_data.email}: {verification_code}")
     
     token = create_access_token({"sub": user.id})
     return Token(access_token=token, token_type="bearer", user=user)
