@@ -130,9 +130,26 @@ const AdminPanel = () => {
                         </div>
                         
                         <div className="flex items-center gap-3">
+                          {!u.is_approved && (
+                            <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 border font-medium">
+                              Pending Approval
+                            </Badge>
+                          )}
+                          
                           <Badge className={`${getRoleBadgeColor(u.role)} border font-medium`}>
                             {getRoleLabel(u.role)}
                           </Badge>
+                          
+                          {!u.is_approved && (
+                            <Button
+                              data-testid={`approve-user-${u.id}`}
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => approveUser(u.id)}
+                            >
+                              Approve
+                            </Button>
+                          )}
                           
                           <Select
                             value={u.role}
