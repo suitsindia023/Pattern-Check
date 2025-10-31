@@ -407,7 +407,12 @@ const OrderDetail = () => {
                   <div className="flex gap-2 pt-4 border-t border-slate-200">
                     <Button
                       data-testid="approve-second"
-                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      disabled={order?.initial_pattern_status !== 'rejected'}
+                      className={`flex-1 ${
+                        order?.initial_pattern_status === 'rejected'
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                       onClick={() => handleApproval('second', 'approved')}
                     >
                       <Check className="w-4 h-4 mr-1.5" />
@@ -415,7 +420,12 @@ const OrderDetail = () => {
                     </Button>
                     <Button
                       data-testid="reject-second"
-                      className="flex-1 bg-red-600 hover:bg-red-700"
+                      disabled={order?.initial_pattern_status !== 'rejected'}
+                      className={`flex-1 ${
+                        order?.initial_pattern_status === 'rejected'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                       onClick={() => handleApproval('second', 'rejected')}
                     >
                       <X className="w-4 h-4 mr-1.5" />
