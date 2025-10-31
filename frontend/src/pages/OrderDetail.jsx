@@ -27,6 +27,7 @@ const OrderDetail = () => {
   const [uploadSlot, setUploadSlot] = useState(1);
   const [chatMessage, setChatMessage] = useState('');
   const [chatImage, setChatImage] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState({});
 
   useEffect(() => {
     fetchOrderData();
