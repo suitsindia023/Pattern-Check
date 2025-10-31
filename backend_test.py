@@ -132,6 +132,9 @@ class PatternMakerAPITester:
                 token=self.tokens['admin']
             )
             self.log_test("Get current user info", success, response if not success else "")
+            
+            if success:
+                print(f"Current user info: {response.get('name')} - Role: {response.get('role')}")
 
     def test_admin_user_management(self):
         """Test admin user management functionality"""
