@@ -77,13 +77,14 @@ class PatternMakerAPITester:
         """Test user registration and login for different roles"""
         print("\n🔍 Testing User Registration and Authentication...")
         
-        # Test user registration
+        # Test user registration with unique timestamps
+        timestamp = datetime.now().strftime("%H%M%S")
         test_users = [
-            {"email": "admin@test.com", "password": "TestPass123!", "name": "Admin User", "role": "admin"},
-            {"email": "uploader@test.com", "password": "TestPass123!", "name": "Order Uploader", "role": "order_uploader"},
-            {"email": "maker@test.com", "password": "TestPass123!", "name": "Pattern Maker", "role": "pattern_maker"},
-            {"email": "checker@test.com", "password": "TestPass123!", "name": "Pattern Checker", "role": "pattern_checker"},
-            {"email": "user@test.com", "password": "TestPass123!", "name": "General User", "role": "general_user"}
+            {"email": f"admin{timestamp}@test.com", "password": "TestPass123!", "name": "Admin User", "role": "admin"},
+            {"email": f"uploader{timestamp}@test.com", "password": "TestPass123!", "name": "Order Uploader", "role": "order_uploader"},
+            {"email": f"maker{timestamp}@test.com", "password": "TestPass123!", "name": "Pattern Maker", "role": "pattern_maker"},
+            {"email": f"checker{timestamp}@test.com", "password": "TestPass123!", "name": "Pattern Checker", "role": "pattern_checker"},
+            {"email": f"user{timestamp}@test.com", "password": "TestPass123!", "name": "General User", "role": "general_user"}
         ]
 
         for user_data in test_users:
