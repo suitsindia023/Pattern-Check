@@ -103,6 +103,9 @@ class ChatMessage(BaseModel):
     user_name: str
     message: str
     image_id: Optional[str] = None
+    quoted_message_id: Optional[str] = None
+    quoted_message_text: Optional[str] = None
+    quoted_user_name: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ChatMessageCreate(BaseModel):
