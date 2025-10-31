@@ -424,10 +424,14 @@ async def download_pattern(pattern_id: str, current_user: User = Depends(get_cur
         grid_out = await fs.open_download_stream(ObjectId(pattern['file_id']))
         contents = await grid_out.read()
         
+        # Properly encode filename for Content-Disposition header
+        import urllib.parse
+        encoded_filename = urllib.parse.quote(pattern['filename'])
+        
         return StreamingResponse(
             io.BytesIO(contents),
             media_type="application/octet-stream",
-            headers={"Content-Disposition": f"attachment; filename={pattern['filename']}"}
+            headers={"Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"}
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error downloading file: {str(e)}")
