@@ -88,9 +88,38 @@ const OrderDetail = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       toast.success('Pattern uploaded successfully!');
+      setSelectedFiles(prev => {
+        const updated = { ...prev };
+        delete updated[`${stage}-${slot}`];
+        return updated;
+      });
       fetchOrderData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Upload failed');
+    }
+  };
+
+  const handleFileSelect = (e, stage, slot) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFiles(prev => ({
+        ...prev,
+        [`${stage}-${slot}`]: file.name
+      }));
+    }
+  };
+
+  const handleDeletePattern = async (patternId, stage, slot) => {
+    if (!window.confirm('Are you sure you want to delete this pattern?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/patterns/${patternId}`);
+      toast.success('Pattern deleted successfully!');
+      fetchOrderData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Delete failed');
     }
   };
 
