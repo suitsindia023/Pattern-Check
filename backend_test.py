@@ -113,9 +113,14 @@ class PatternMakerAPITester:
             "POST",
             "auth/login",
             200,
-            data={"email": "admin@test.com", "password": "TestPass123!"}
+            data={"email": f"admin{timestamp}@test.com", "password": "TestPass123!"}
         )
         self.log_test("Login admin user", success, response if not success else "")
+        
+        if success:
+            # Update token with login response
+            self.tokens['admin'] = response.get('access_token')
+            self.users['admin'] = response.get('user')
 
         # Test /auth/me endpoint
         if self.tokens.get('admin'):
