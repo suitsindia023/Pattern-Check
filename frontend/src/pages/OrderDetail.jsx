@@ -609,13 +609,31 @@ const OrderDetail = () => {
                     />
                     <div className="flex gap-2">
                       {canUploadChatImage && (
-                        <div className="flex-1">
+                        <div className="flex-1 space-y-2">
                           <Input
+                            id="chat-image-input"
                             type="file"
                             accept="image/*"
-                            onChange={(e) => setChatImage(e.target.files[0])}
+                            onChange={handleChatImageSelect}
                             className="text-xs"
                           />
+                          {chatImagePreview && (
+                            <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded flex items-center justify-between">
+                              <span className="truncate">{chatImagePreview}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setChatImage(null);
+                                  setChatImagePreview(null);
+                                  const fileInput = document.getElementById('chat-image-input');
+                                  if (fileInput) fileInput.value = '';
+                                }}
+                                className="text-green-700 hover:text-green-900 ml-2"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
                       <Button 
