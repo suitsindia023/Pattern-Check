@@ -244,7 +244,7 @@ async def update_user_role(user_id: str, role_data: UserRole, current_user: User
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
-@api_router.patch("/users/{user_id}/approve", response_model=User)
+@api_router.get("/users/{user_id}/approve", response_model=User)
 async def approve_user(user_id: str, current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
@@ -257,6 +257,80 @@ async def approve_user(user_id: str, current_user: User = Depends(get_current_us
     if isinstance(user_doc.get('created_at'), str):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
+
+@api_router.get("/dashboard/metrics")
+async def get_dashboard_metrics(days: int = 30, current_user: User = Depends(get_current_user)):
+    """Get dashboard metrics for specified time period"""
+    
+    # Calculate date range
+    end_date = datetime.now(timezone.utc)
+    start_date = end_date - timedelta(days=days)
+    start_date_iso = start_date.isoformat()
+    
+    # Get orders in date range
+    orders = await db.orders.find({
+        "created_at": {"$gte": start_date_iso}
+    }).to_list(10000)
+    
+    # Get all patterns for these orders
+    order_ids = [o['id'] for o in orders]
+    patterns = await db.patterns.find({
+        "order_id": {"$in": order_ids}
+    }).to_list(10000)
+    
+    # Calculate metrics
+    total_orders = len(orders)
+    total_patterns = len(patterns)
+    
+    # Count approved patterns (check order status)
+    approved_count = 0
+    for order in orders:
+        if order.get('approved_pattern_status') == 'approved':
+            approved_count += 1
+    
+    # Calculate average pattern making time
+    pattern_making_times = []
+    for order in orders:
+        if order.get('initial_pattern_date'):
+            try:
+                created = datetime.fromisoformat(order['created_at'])
+                first_pattern = datetime.fromisoformat(order['initial_pattern_date'])
+                time_diff = (first_pattern - created).total_seconds() / 3600  # hours
+                pattern_making_times.append(time_diff)
+            except:
+                pass
+    
+    avg_pattern_making_time = sum(pattern_making_times) / len(pattern_making_times) if pattern_making_times else 0
+    
+    # Calculate average approval time
+    approval_times = []
+    for order in orders:
+        if order.get('initial_pattern_date') and order.get('initial_pattern_status'):
+            try:
+                first_pattern = datetime.fromisoformat(order['initial_pattern_date'])
+                # Use second_pattern_date or approved_pattern_date for approval time
+                approval_date = order.get('second_pattern_date') or order.get('approved_pattern_date')
+                if approval_date:
+                    approval = datetime.fromisoformat(approval_date)
+                    time_diff = (approval - first_pattern).total_seconds() / 3600  # hours
+                    approval_times.append(time_diff)
+            except:
+                pass
+    
+    avg_approval_time = sum(approval_times) / len(approval_times) if approval_times else 0
+    
+    return {
+        "total_orders": total_orders,
+        "total_patterns": total_patterns,
+        "approved_patterns": approved_count,
+        "avg_pattern_making_time_hours": round(avg_pattern_making_time, 2),
+        "avg_approval_time_hours": round(avg_approval_time, 2),
+        "date_range": {
+            "start": start_date_iso,
+            "end": end_date.isoformat(),
+            "days": days
+        }
+    }
 
 # Order endpoints
 @api_router.post("/orders", response_model=Order)
