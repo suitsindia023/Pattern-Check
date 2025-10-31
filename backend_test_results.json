@@ -1,88 +1,38 @@
 {
-  "timestamp": "2025-10-31T11:21:39.595862",
-  "total_tests": 16,
-  "passed_tests": 10,
-  "success_rate": 62.5,
+  "timestamp": "2025-10-31T11:22:18.893810",
+  "total_tests": 6,
+  "passed_tests": 1,
+  "success_rate": 16.666666666666664,
   "test_details": [
     {
       "test": "Register admin",
-      "success": true,
-      "details": ""
+      "success": false,
+      "details": "Expected 200, got 400 - Email already registered"
     },
     {
       "test": "Register order_uploader",
-      "success": true,
-      "details": ""
+      "success": false,
+      "details": "Expected 200, got 400 - Email already registered"
     },
     {
       "test": "Register pattern_maker",
-      "success": true,
-      "details": ""
+      "success": false,
+      "details": "Expected 200, got 400 - Email already registered"
     },
     {
       "test": "Register pattern_checker",
-      "success": true,
-      "details": ""
+      "success": false,
+      "details": "Expected 200, got 400 - Email already registered"
     },
     {
       "test": "Register general_user",
-      "success": true,
-      "details": ""
+      "success": false,
+      "details": "Expected 200, got 400 - Email already registered"
     },
     {
       "test": "Login admin user",
       "success": true,
       "details": ""
-    },
-    {
-      "test": "Get current user info",
-      "success": true,
-      "details": ""
-    },
-    {
-      "test": "Get all users (admin)",
-      "success": false,
-      "details": "Expected 200, got 403 - Admin access required"
-    },
-    {
-      "test": "Get users (non-admin) - should fail",
-      "success": true,
-      "details": ""
-    },
-    {
-      "test": "Create order (admin)",
-      "success": false,
-      "details": "Expected 200, got 403 - Permission denied"
-    },
-    {
-      "test": "Create order (order_uploader)",
-      "success": false,
-      "details": "Expected 200, got 403 - Permission denied"
-    },
-    {
-      "test": "Create order (general_user) - should fail",
-      "success": true,
-      "details": ""
-    },
-    {
-      "test": "Get all orders",
-      "success": true,
-      "details": ""
-    },
-    {
-      "test": "Pattern upload test",
-      "success": false,
-      "details": "No test order available"
-    },
-    {
-      "test": "Approval workflow test",
-      "success": false,
-      "details": "No test order available"
-    },
-    {
-      "test": "Chat functionality test",
-      "success": false,
-      "details": "No test order available"
     }
   ]
 }
