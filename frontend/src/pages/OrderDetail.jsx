@@ -273,8 +273,29 @@ const OrderDetail = () => {
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 {renderPatternSlots('initial', patterns.initial, canUploadInitial)}
+                
+                {canApprove && !order?.initial_pattern_status && (
+                  <div className="flex gap-2 pt-4 border-t border-slate-200">
+                    <Button
+                      data-testid="approve-initial"
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      onClick={() => handleApproval('initial', 'approved')}
+                    >
+                      <Check className="w-4 h-4 mr-1.5" />
+                      Approve
+                    </Button>
+                    <Button
+                      data-testid="reject-initial"
+                      className="flex-1 bg-red-600 hover:bg-red-700"
+                      onClick={() => handleApproval('initial', 'rejected')}
+                    >
+                      <X className="w-4 h-4 mr-1.5" />
+                      Reject
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
