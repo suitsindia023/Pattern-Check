@@ -551,7 +551,7 @@ const OrderDetail = () => {
                             </div>
                           )}
                           
-                          <p className="text-sm">{chat.message}</p>
+                          {chat.message && <p className="text-sm">{chat.message}</p>}
                           {chat.image_id && (
                             <img
                               src={`${API}/chat/images/${chat.image_id}`}
