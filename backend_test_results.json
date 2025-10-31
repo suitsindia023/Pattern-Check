@@ -1,38 +1,73 @@
 {
-  "timestamp": "2025-10-31T11:22:18.893810",
-  "total_tests": 6,
-  "passed_tests": 1,
-  "success_rate": 16.666666666666664,
+  "timestamp": "2025-10-31T11:22:45.620062",
+  "total_tests": 13,
+  "passed_tests": 8,
+  "success_rate": 61.53846153846154,
   "test_details": [
     {
       "test": "Register admin",
-      "success": false,
-      "details": "Expected 200, got 400 - Email already registered"
+      "success": true,
+      "details": ""
     },
     {
       "test": "Register order_uploader",
-      "success": false,
-      "details": "Expected 200, got 400 - Email already registered"
+      "success": true,
+      "details": ""
     },
     {
       "test": "Register pattern_maker",
-      "success": false,
-      "details": "Expected 200, got 400 - Email already registered"
+      "success": true,
+      "details": ""
     },
     {
       "test": "Register pattern_checker",
-      "success": false,
-      "details": "Expected 200, got 400 - Email already registered"
+      "success": true,
+      "details": ""
     },
     {
       "test": "Register general_user",
-      "success": false,
-      "details": "Expected 200, got 400 - Email already registered"
+      "success": true,
+      "details": ""
     },
     {
       "test": "Login admin user",
       "success": true,
       "details": ""
+    },
+    {
+      "test": "Get current user info",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Check admin user role (currently: general_user)",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Admin user management",
+      "success": false,
+      "details": "User role is 'general_user', not 'admin'. Manual role assignment needed."
+    },
+    {
+      "test": "Order creation test",
+      "success": false,
+      "details": "User role 'general_user' lacks permission"
+    },
+    {
+      "test": "Pattern upload test",
+      "success": false,
+      "details": "No test order available"
+    },
+    {
+      "test": "Approval workflow test",
+      "success": false,
+      "details": "No test order available"
+    },
+    {
+      "test": "Chat functionality test",
+      "success": false,
+      "details": "No test order available"
     }
   ]
 }
