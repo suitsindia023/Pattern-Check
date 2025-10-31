@@ -275,6 +275,10 @@ async def create_order(order_data: OrderCreate, current_user: User = Depends(get
 
 @api_router.get("/orders", response_model=List[Order])
 async def get_orders(current_user: User = Depends(get_current_user)):
+    # Check if user is approved (admins are always approved)
+    if current_user.role != "admin" and not current_user.is_approved:
+        raise HTTPException(status_code=403, detail="Your account is pending admin approval")
+    
     orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
     for o in orders:
         if isinstance(o.get('created_at'), str):
@@ -283,6 +287,10 @@ async def get_orders(current_user: User = Depends(get_current_user)):
 
 @api_router.get("/orders/{order_id}", response_model=Order)
 async def get_order(order_id: str, current_user: User = Depends(get_current_user)):
+    # Check if user is approved (admins are always approved)
+    if current_user.role != "admin" and not current_user.is_approved:
+        raise HTTPException(status_code=403, detail="Your account is pending admin approval")
+    
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
