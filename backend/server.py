@@ -398,6 +398,25 @@ async def download_pattern(pattern_id: str, current_user: User = Depends(get_cur
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error downloading file: {str(e)}")
 
+@api_router.delete("/patterns/{pattern_id}")
+async def delete_pattern(pattern_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    pattern = await db.patterns.find_one({"id": pattern_id}, {"_id": 0})
+    if not pattern:
+        raise HTTPException(status_code=404, detail="Pattern not found")
+    
+    try:
+        from bson import ObjectId
+        # Delete file from GridFS
+        await fs.delete(ObjectId(pattern['file_id']))
+        # Delete pattern record
+        await db.patterns.delete_one({"id": pattern_id})
+        return {"message": "Pattern deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting pattern: {str(e)}")
+
 # Approval endpoints
 @api_router.post("/orders/{order_id}/approve")
 async def approve_reject_order(order_id: str, action: ApprovalAction, current_user: User = Depends(get_current_user)):
