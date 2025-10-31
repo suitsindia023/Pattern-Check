@@ -31,7 +31,12 @@ const Dashboard = () => {
       const response = await axios.get(`${API}/orders`);
       setOrders(response.data);
     } catch (error) {
-      toast.error('Failed to fetch orders');
+      if (error.response?.status === 403) {
+        // User not approved - silent failure, will show message in UI
+        setOrders([]);
+      } else {
+        toast.error('Failed to fetch orders');
+      }
     } finally {
       setLoading(false);
     }
