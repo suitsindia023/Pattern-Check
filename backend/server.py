@@ -241,6 +241,20 @@ async def update_user_role(user_id: str, role_data: UserRole, current_user: User
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+@api_router.patch("/users/{user_id}/approve", response_model=User)
+async def approve_user(user_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.users.update_one({"id": user_id}, {"$set": {"is_approved": True}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_doc = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if isinstance(user_doc.get('created_at'), str):
+        user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
+    return User(**user_doc)
+
 # Order endpoints
 @api_router.post("/orders", response_model=Order)
 async def create_order(order_data: OrderCreate, current_user: User = Depends(get_current_user)):
