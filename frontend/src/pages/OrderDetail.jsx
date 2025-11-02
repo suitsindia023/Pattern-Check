@@ -208,6 +208,73 @@ const OrderDetail = () => {
     }
   };
 
+  const handleBulkFileSelect = (e) => {
+    const files = Array.from(e.target.files || []);
+    setBulkUploadFiles(files);
+  };
+
+  const handleBulkUpload = async () => {
+    if (bulkUploadFiles.length === 0) {
+      toast.error('Please select files to upload');
+      return;
+    }
+
+    let successCount = 0;
+    for (let i = 0; i < bulkUploadFiles.length && i < 5; i++) {
+      const formData = new FormData();
+      formData.append('file', bulkUploadFiles[i]);
+      formData.append('stage', 'initial');
+      formData.append('slot', i + 1);
+
+      try {
+        await axios.post(`${API}/orders/${orderId}/patterns`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        successCount++;
+      } catch (error) {
+        console.error(`Failed to upload file ${i + 1}:`, error);
+      }
+    }
+
+    if (successCount > 0) {
+      toast.success(`${successCount} pattern(s) uploaded successfully!`);
+      setBulkUploadFiles([]);
+      const fileInput = document.getElementById('bulk-upload-input');
+      if (fileInput) fileInput.value = '';
+      fetchOrderData();
+    } else {
+      toast.error('Failed to upload patterns');
+    }
+  };
+
+  const handleMarkAsDone = async () => {
+    try {
+      await axios.patch(`${API}/orders/${orderId}/mark-done`);
+      toast.success('Initial patterns marked as done!');
+      fetchOrderData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to mark as done');
+    }
+  };
+
+  const handleUpdateFinalMeasurements = async () => {
+    if (!finalMeasurementsLink.trim()) {
+      toast.error('Please enter a link');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('link', finalMeasurementsLink);
+
+    try {
+      await axios.patch(`${API}/orders/${orderId}/final-measurements`, formData);
+      toast.success('Final measurements link updated!');
+      fetchOrderData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to update link');
+    }
+  };
+
   const handleDeleteOrder = async () => {
     if (!window.confirm('Are you sure you want to delete this entire order? This will delete all patterns and chats. This action cannot be undone.')) {
       return;
