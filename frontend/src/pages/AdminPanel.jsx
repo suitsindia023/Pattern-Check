@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, Users, Shield } from 'lucide-react';
+import { ArrowLeft, Users, Shield, Trash2, Power, PowerOff } from 'lucide-react';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
