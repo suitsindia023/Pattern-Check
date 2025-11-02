@@ -259,6 +259,38 @@ async def approve_user(user_id: str, current_user: User = Depends(get_current_us
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+@api_router.patch("/users/{user_id}/toggle-active", response_model=User)
+async def toggle_user_active(user_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user_doc = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    new_status = not user_doc.get('is_active', True)
+    result = await db.users.update_one({"id": user_id}, {"$set": {"is_active": new_status}})
+    
+    user_doc = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if isinstance(user_doc.get('created_at'), str):
+        user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
+    return User(**user_doc)
+
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Prevent self-deletion
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    
+    result = await db.users.delete_one({"id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "User deleted successfully"}
+
 @api_router.get("/dashboard/metrics")
 async def get_dashboard_metrics(days: int = 30, current_user: User = Depends(get_current_user)):
     """Get dashboard metrics for specified time period"""
