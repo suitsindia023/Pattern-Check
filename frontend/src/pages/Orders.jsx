@@ -77,8 +77,12 @@ const Orders = () => {
 
     // Status filter
     if (statusFilter === 'approved') {
-      // Show only orders with final approval
-      filtered = filtered.filter(order => order.approved_pattern_status === 'approved');
+      // Show orders that have been approved at ANY stage
+      filtered = filtered.filter(order => 
+        order.initial_pattern_status === 'approved' || 
+        order.second_pattern_status === 'approved' ||
+        order.approved_pattern_status === 'approved'
+      );
     } else if (statusFilter === 'rejected') {
       // Show orders that have been rejected at any stage
       filtered = filtered.filter(order => 
@@ -87,9 +91,12 @@ const Orders = () => {
         order.approved_pattern_status === 'rejected'
       );
     } else if (statusFilter === 'no_action') {
-      // Show orders that are neither approved nor rejected (still pending)
+      // Show orders with no approvals or rejections
       filtered = filtered.filter(order => {
-        const hasApproval = order.approved_pattern_status === 'approved';
+        const hasApproval = 
+          order.initial_pattern_status === 'approved' ||
+          order.second_pattern_status === 'approved' ||
+          order.approved_pattern_status === 'approved';
         const hasRejection = 
           order.initial_pattern_status === 'rejected' || 
           order.second_pattern_status === 'rejected' ||
