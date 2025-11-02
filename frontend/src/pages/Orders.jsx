@@ -77,19 +77,25 @@ const Orders = () => {
 
     // Status filter
     if (statusFilter === 'approved') {
+      // Show only orders with final approval
       filtered = filtered.filter(order => order.approved_pattern_status === 'approved');
     } else if (statusFilter === 'rejected') {
+      // Show orders that have been rejected at any stage
       filtered = filtered.filter(order => 
         order.initial_pattern_status === 'rejected' || 
         order.second_pattern_status === 'rejected' ||
         order.approved_pattern_status === 'rejected'
       );
     } else if (statusFilter === 'no_action') {
-      filtered = filtered.filter(order => 
-        !order.initial_pattern_status && 
-        !order.second_pattern_status && 
-        !order.approved_pattern_status
-      );
+      // Show orders that are neither approved nor rejected (still pending)
+      filtered = filtered.filter(order => {
+        const hasApproval = order.approved_pattern_status === 'approved';
+        const hasRejection = 
+          order.initial_pattern_status === 'rejected' || 
+          order.second_pattern_status === 'rejected' ||
+          order.approved_pattern_status === 'rejected';
+        return !hasApproval && !hasRejection;
+      });
     }
 
     setFilteredOrders(filtered);
