@@ -49,6 +49,35 @@ const AdminPanel = () => {
     }
   };
 
+  const toggleUserActive = async (userId, currentStatus) => {
+    const action = currentStatus ? 'deactivate' : 'activate';
+    if (!window.confirm(`Are you sure you want to ${action} this user?`)) {
+      return;
+    }
+    
+    try {
+      await axios.patch(`${API}/users/${userId}/toggle-active`);
+      toast.success(`User ${action}d successfully!`);
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || `Failed to ${action} user`);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      await axios.delete(`${API}/users/${userId}`);
+      toast.success('User deleted successfully!');
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to delete user');
+    }
+  };
+
   const getRoleBadgeColor = (role) => {
     const colors = {
       admin: 'bg-red-100 text-red-700 border-red-200',
