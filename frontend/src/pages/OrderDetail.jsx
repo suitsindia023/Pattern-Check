@@ -416,7 +416,7 @@ const OrderDetail = () => {
                 rel="noopener noreferrer"
                 className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-0.5"
               >
-                View Google Sheet <ExternalLink className="w-3 h-3" />
+                View Order Sheet <ExternalLink className="w-3 h-3" />
               </a>
             </div>
             {isAdmin && (
