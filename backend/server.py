@@ -428,6 +428,36 @@ async def update_order(order_id: str, order_data: OrderUpdate, current_user: Use
         order['created_at'] = datetime.fromisoformat(order['created_at'])
     return Order(**order)
 
+@api_router.patch("/orders/{order_id}/mark-done")
+async def mark_initial_patterns_done(order_id: str, current_user: User = Depends(get_current_user)):
+    """Pattern Maker marks initial patterns as complete"""
+    if current_user.role not in ["admin", "pattern_maker"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
+    
+    result = await db.orders.update_one(
+        {"id": order_id}, 
+        {"$set": {"initial_patterns_done": True}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Initial patterns marked as done"}
+
+@api_router.patch("/orders/{order_id}/final-measurements")
+async def update_final_measurements(order_id: str, link: str = Form(...), current_user: User = Depends(get_current_user)):
+    """Pattern Checker updates final measurements link"""
+    if current_user.role not in ["admin", "pattern_checker"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
+    
+    result = await db.orders.update_one(
+        {"id": order_id}, 
+        {"$set": {"final_measurements_link": link}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Final measurements link updated"}
+
 @api_router.delete("/orders/{order_id}")
 async def delete_order(order_id: str, current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
