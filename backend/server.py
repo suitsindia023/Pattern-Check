@@ -44,6 +44,7 @@ class User(BaseModel):
     name: str
     role: str = "general_user"
     is_approved: bool = False
+    is_active: bool = True
     is_email_verified: bool = False
     verification_code: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
