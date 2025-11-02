@@ -446,9 +446,14 @@ const OrderDetail = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>Initial Patterns</CardTitle>
-                    <CardDescription>Pattern Maker uploads initial patterns</CardDescription>
+                    <CardDescription>Pattern Maker uploads multiple patterns at once</CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
+                    {order?.initial_patterns_done && (
+                      <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                        Done
+                      </Badge>
+                    )}
                     {order?.initial_pattern_date && (
                       <Badge variant="secondary" className="text-xs">
                         {new Date(order.initial_pattern_date).toLocaleDateString()}
@@ -466,13 +471,57 @@ const OrderDetail = () => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {renderPatternSlots('initial', patterns.initial, canUploadInitial)}
+                {renderPatternSlots('initial', patterns.initial, false)}
                 
+                {/* Bulk Upload for Pattern Maker */}
+                {canUploadInitial && !order?.initial_patterns_done && (
+                  <div className="pt-4 border-t border-slate-200 space-y-3">
+                    <Label className="text-sm font-medium">Upload Multiple Patterns (Max 5)</Label>
+                    <Input
+                      id="bulk-upload-input"
+                      type="file"
+                      multiple
+                      accept="*"
+                      onChange={handleBulkFileSelect}
+                      className="text-sm"
+                    />
+                    {bulkUploadFiles.length > 0 && (
+                      <div className="text-sm text-blue-600 bg-blue-50 px-3 py-2 rounded">
+                        {bulkUploadFiles.length} file(s) selected
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleBulkUpload}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        disabled={bulkUploadFiles.length === 0}
+                      >
+                        <Upload className="w-4 h-4 mr-1.5" />
+                        Upload Patterns
+                      </Button>
+                      <Button
+                        onClick={handleMarkAsDone}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        disabled={patterns.initial.length === 0}
+                      >
+                        <Check className="w-4 h-4 mr-1.5" />
+                        Done
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Approve/Reject for Pattern Checker - Only enabled after Done */}
                 {canApprove && !order?.initial_pattern_status && (
                   <div className="flex gap-2 pt-4 border-t border-slate-200">
                     <Button
                       data-testid="approve-initial"
-                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      disabled={!order?.initial_patterns_done}
+                      className={`flex-1 ${
+                        order?.initial_patterns_done
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                       onClick={() => handleApproval('initial', 'approved')}
                     >
                       <Check className="w-4 h-4 mr-1.5" />
@@ -480,7 +529,12 @@ const OrderDetail = () => {
                     </Button>
                     <Button
                       data-testid="reject-initial"
-                      className="flex-1 bg-red-600 hover:bg-red-700"
+                      disabled={!order?.initial_patterns_done}
+                      className={`flex-1 ${
+                        order?.initial_patterns_done
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                       onClick={() => handleApproval('initial', 'rejected')}
                     >
                       <X className="w-4 h-4 mr-1.5" />
