@@ -86,6 +86,7 @@ class OrderCreate(BaseModel):
 class OrderUpdate(BaseModel):
     order_number: Optional[str] = None
     google_sheet_link: Optional[str] = None
+    final_measurements_link: Optional[str] = None
 
 class Pattern(BaseModel):
     model_config = ConfigDict(extra="ignore")
