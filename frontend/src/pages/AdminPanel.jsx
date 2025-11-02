@@ -158,14 +158,20 @@ const AdminPanel = () => {
                           </div>
                         </div>
                         
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           {!u.is_approved && (
-                            <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 border font-medium">
-                              Pending Approval
+                            <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 border font-medium text-xs">
+                              Pending
                             </Badge>
                           )}
                           
-                          <Badge className={`${getRoleBadgeColor(u.role)} border font-medium`}>
+                          {!u.is_active && (
+                            <Badge className="bg-red-100 text-red-700 border-red-200 border font-medium text-xs">
+                              Inactive
+                            </Badge>
+                          )}
+                          
+                          <Badge className={`${getRoleBadgeColor(u.role)} border font-medium text-xs`}>
                             {getRoleLabel(u.role)}
                           </Badge>
                           
@@ -173,7 +179,7 @@ const AdminPanel = () => {
                             <Button
                               data-testid={`approve-user-${u.id}`}
                               size="sm"
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                              className="bg-green-600 hover:bg-green-700 text-white text-xs h-7"
                               onClick={() => approveUser(u.id)}
                             >
                               Approve
@@ -184,7 +190,7 @@ const AdminPanel = () => {
                             value={u.role}
                             onValueChange={(newRole) => updateRole(u.id, newRole)}
                           >
-                            <SelectTrigger data-testid={`role-select-${u.id}`} className="w-[180px]">
+                            <SelectTrigger data-testid={`role-select-${u.id}`} className="w-[160px] h-8 text-xs">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -195,6 +201,34 @@ const AdminPanel = () => {
                               <SelectItem value="general_user">General User</SelectItem>
                             </SelectContent>
                           </Select>
+                          
+                          {/* Toggle Active/Inactive */}
+                          <Button
+                            data-testid={`toggle-active-${u.id}`}
+                            size="sm"
+                            variant="outline"
+                            className={`h-8 w-8 p-0 ${u.is_active ? 'border-green-300 hover:bg-green-50' : 'border-red-300 hover:bg-red-50'}`}
+                            onClick={() => toggleUserActive(u.id, u.is_active)}
+                            title={u.is_active ? 'Deactivate user' : 'Activate user'}
+                          >
+                            {u.is_active ? (
+                              <Power className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <PowerOff className="w-4 h-4 text-red-600" />
+                            )}
+                          </Button>
+                          
+                          {/* Delete User */}
+                          <Button
+                            data-testid={`delete-user-${u.id}`}
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0 border-red-300 hover:bg-red-50"
+                            onClick={() => deleteUser(u.id)}
+                            title="Delete user"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
