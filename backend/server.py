@@ -68,10 +68,12 @@ class Order(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     order_number: str
     google_sheet_link: str
+    final_measurements_link: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by: str
     initial_pattern_date: Optional[str] = None
     initial_pattern_status: Optional[str] = None  # approved, rejected
+    initial_patterns_done: bool = False  # Pattern Maker marks as done
     second_pattern_status: Optional[str] = None  # approved, rejected
     second_pattern_date: Optional[str] = None
     approved_pattern_status: Optional[str] = None  # approved, rejected
