@@ -635,6 +635,51 @@ const OrderDetail = () => {
                 {renderPatternSlots('approved', patterns.approved, canUploadSecondApproved)}
               </CardContent>
             </Card>
+
+            {/* Final Measurements Link - Pattern Checker Only */}
+            {(user?.role === 'admin' || user?.role === 'pattern_checker') && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Final Measurements</CardTitle>
+                  <CardDescription>Upload the final measurements G Sheet link</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {order?.final_measurements_link ? (
+                    <div className="space-y-2">
+                      <a 
+                        href={order.final_measurements_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                      >
+                        View Final Measurements <ExternalLink className="w-3 h-3" />
+                      </a>
+                      <Input
+                        placeholder="Update G Sheet link..."
+                        value={finalMeasurementsLink}
+                        onChange={(e) => setFinalMeasurementsLink(e.target.value)}
+                        className="text-sm"
+                      />
+                    </div>
+                  ) : (
+                    <Input
+                      placeholder="Enter G Sheet link..."
+                      value={finalMeasurementsLink}
+                      onChange={(e) => setFinalMeasurementsLink(e.target.value)}
+                      className="text-sm"
+                    />
+                  )}
+                  <Button
+                    onClick={handleUpdateFinalMeasurements}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                    disabled={!finalMeasurementsLink.trim()}
+                  >
+                    <Upload className="w-4 h-4 mr-1.5" />
+                    {order?.final_measurements_link ? 'Update Link' : 'Upload Link'}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Right Side - Chat */}
