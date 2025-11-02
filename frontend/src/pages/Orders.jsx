@@ -8,37 +8,91 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Plus, Calendar, ArrowLeft } from 'lucide-react';
 
 const Orders = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all'); // all, approved, rejected, no_action
+  const [dateFilter, setDateFilter] = useState(30); // days
   const [formData, setFormData] = useState({
     order_number: '',
     google_sheet_link: ''
   });
 
+  const statusFilters = [
+    { label: 'All Orders', value: 'all' },
+    { label: 'Approved', value: 'approved' },
+    { label: 'Rejected', value: 'rejected' },
+    { label: 'No Action', value: 'no_action' }
+  ];
+
+  const dateFilters = [
+    { label: 'Today', days: 1 },
+    { label: 'Last 3 Days', days: 3 },
+    { label: 'Last Week', days: 7 },
+    { label: 'Last Month', days: 30 },
+    { label: 'Last 3 Months', days: 90 }
+  ];
+
   useEffect(() => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [allOrders, statusFilter, dateFilter]);
+
   const fetchOrders = async () => {
     try {
       const response = await axios.get(`${API}/orders`);
-      setOrders(response.data);
+      setAllOrders(response.data);
     } catch (error) {
       if (error.response?.status === 403) {
-        setOrders([]);
+        setAllOrders([]);
       } else {
         toast.error('Failed to fetch orders');
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allOrders];
+
+    // Date filter
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - dateFilter);
+    filtered = filtered.filter(order => {
+      const orderDate = new Date(order.created_at);
+      return orderDate >= cutoffDate;
+    });
+
+    // Status filter
+    if (statusFilter === 'approved') {
+      filtered = filtered.filter(order => order.approved_pattern_status === 'approved');
+    } else if (statusFilter === 'rejected') {
+      filtered = filtered.filter(order => 
+        order.initial_pattern_status === 'rejected' || 
+        order.second_pattern_status === 'rejected' ||
+        order.approved_pattern_status === 'rejected'
+      );
+    } else if (statusFilter === 'no_action') {
+      filtered = filtered.filter(order => 
+        !order.initial_pattern_status && 
+        !order.second_pattern_status && 
+        !order.approved_pattern_status
+      );
+    }
+
+    setFilteredOrders(filtered);
   };
 
   const createOrder = async (e) => {
@@ -108,7 +162,7 @@ const Orders = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="google_sheet_link">Google Sheet Link</Label>
+                      <Label htmlFor="google_sheet_link">Order Sheet Link</Label>
                       <Input
                         id="google_sheet_link"
                         data-testid="google-sheet-link-input"
@@ -134,22 +188,60 @@ const Orders = () => {
         </div>
       </header>
 
-      {/* Orders Grid */}
+      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Filters */}
+        <div className="mb-6 space-y-4">
+          {/* Status Tabs */}
+          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList className="bg-white">
+              {statusFilters.map((filter) => (
+                <TabsTrigger 
+                  key={filter.value} 
+                  value={filter.value}
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  {filter.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
+          {/* Date Filters */}
+          <Tabs value={dateFilter.toString()} onValueChange={(val) => setDateFilter(parseInt(val))}>
+            <TabsList className="bg-white">
+              {dateFilters.map((filter) => (
+                <TabsTrigger 
+                  key={filter.days} 
+                  value={filter.days.toString()}
+                  className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white"
+                >
+                  {filter.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
+          <div className="text-sm text-slate-600">
+            Showing {filteredOrders.length} of {allOrders.length} orders
+          </div>
+        </div>
+
+        {/* Orders Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
               <Card key={i} className="animate-shimmer" />
             ))}
           </div>
-        ) : orders.length === 0 ? (
+        ) : filteredOrders.length === 0 ? (
           <Card className="text-center py-16">
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No orders yet</h3>
-            <p className="text-slate-500 mb-6">Get started by creating your first order</p>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No orders found</h3>
+            <p className="text-slate-500 mb-6">Try adjusting your filters or create a new order</p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <Card 
                 key={order.id} 
                 data-testid={`order-card-${order.id}`}
