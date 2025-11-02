@@ -31,6 +31,8 @@ const OrderDetail = () => {
   const [quotedMessage, setQuotedMessage] = useState(null);
   const [chatImagePreview, setChatImagePreview] = useState(null);
   const [viewingImage, setViewingImage] = useState(null);
+  const [bulkUploadFiles, setBulkUploadFiles] = useState([]);
+  const [finalMeasurementsLink, setFinalMeasurementsLink] = useState('');
 
   useEffect(() => {
     fetchOrderData();
