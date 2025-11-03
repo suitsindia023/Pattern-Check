@@ -15,6 +15,13 @@ import jwt
 from passlib.context import CryptContext
 import io
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -24,34 +31,19 @@ load_dotenv(ROOT_DIR / '.env')
 # db = client[os.environ['DB_NAME']]
 # fs = AsyncIOMotorGridFSBucket(db)
 
-# MongoDB connection with SSL fix for Render
+# MongoDB connection - simple version that works
 mongo_url = os.environ['MONGO_URL']
 try:
-    # Try connecting with TLS options for Render
+    # Connect with TLS options for Render
     client = AsyncIOMotorClient(
         mongo_url,
         tls=True,
-        tlsAllowInvalidCertificates=True,
-        serverSelectionTimeoutMS=10000,
-        connectTimeoutMS=10000
+        tlsAllowInvalidCertificates=True
     )
-    
-    # Test connection - this will happen when the app starts
     logger.info("✅ MongoDB client configured successfully")
-    
 except Exception as e:
     logger.error(f"❌ MongoDB connection failed: {e}")
-    # Fallback: try without TLS
-    try:
-        client = AsyncIOMotorClient(
-            mongo_url,
-            tls=False,
-            serverSelectionTimeoutMS=10000
-        )
-        logger.info("✅ MongoDB client configured without TLS")
-    except Exception as e2:
-        logger.error(f"❌ MongoDB connection completely failed: {e2}")
-        raise
+    raise
 
 db = client[os.environ['DB_NAME']]
 fs = AsyncIOMotorGridFSBucket(db)
@@ -746,11 +738,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
