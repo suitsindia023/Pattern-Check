@@ -28,6 +28,7 @@ const Orders = () => {
 
   const statusFilters = [
     { label: 'All Orders', value: 'all' },
+    { label: 'No Pattern', value: 'no_pattern' },
     { label: 'Approved', value: 'approved' },
     { label: 'Rejected', value: 'rejected' },
     { label: 'No Action', value: 'no_action' }
@@ -76,7 +77,10 @@ const Orders = () => {
     });
 
     // Status filter
-    if (statusFilter === 'approved') {
+    if (statusFilter === 'no_pattern') {
+      // Show orders where initial patterns have NOT been uploaded
+      filtered = filtered.filter(order => !order.initial_pattern_date);
+    } else if (statusFilter === 'approved') {
       // Show orders that have been approved at ANY stage
       filtered = filtered.filter(order => 
         order.initial_pattern_status === 'approved' || 
