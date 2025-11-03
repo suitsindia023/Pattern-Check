@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: emergent-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGO_URL
+        value: mongodb+srv://nurekowser01freelancer_db_user:commandos01@cluster0.gyt4z7z.mongodb.net/emergent_db?retryWrites=true&w=majority
+      - key: DB_NAME
+        value: emergent_db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://your-frontend-app.vercel.app,http://localhost:3000
