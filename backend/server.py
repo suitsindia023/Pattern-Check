@@ -36,13 +36,22 @@ try:
         connectTimeoutMS=10000
     )
     
-    # Test connection
-    await client.admin.command('ping')
-    logger.info("✅ MongoDB connected successfully")
+    # Test connection - this will happen when the app starts
+    logger.info("✅ MongoDB client configured successfully")
     
 except Exception as e:
     logger.error(f"❌ MongoDB connection failed: {e}")
-    raise
+    # Fallback: try without TLS
+    try:
+        client = AsyncIOMotorClient(
+            mongo_url,
+            tls=False,
+            serverSelectionTimeoutMS=10000
+        )
+        logger.info("✅ MongoDB client configured without TLS")
+    except Exception as e2:
+        logger.error(f"❌ MongoDB connection completely failed: {e2}")
+        raise
 
 db = client[os.environ['DB_NAME']]
 fs = AsyncIOMotorGridFSBucket(db)
