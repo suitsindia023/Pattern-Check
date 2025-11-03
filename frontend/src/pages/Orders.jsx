@@ -77,7 +77,10 @@ const Orders = () => {
     });
 
     // Status filter
-    if (statusFilter === 'approved') {
+    if (statusFilter === 'no_pattern') {
+      // Show orders where initial patterns have NOT been uploaded
+      filtered = filtered.filter(order => !order.initial_pattern_date);
+    } else if (statusFilter === 'approved') {
       // Show orders that have been approved at ANY stage
       filtered = filtered.filter(order => 
         order.initial_pattern_status === 'approved' || 
