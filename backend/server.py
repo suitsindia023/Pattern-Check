@@ -19,8 +19,31 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
+# mongo_url = os.environ['MONGO_URL']
+# client = AsyncIOMotorClient(mongo_url)
+# db = client[os.environ['DB_NAME']]
+# fs = AsyncIOMotorGridFSBucket(db)
+
+# MongoDB connection with SSL fix for Render
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+try:
+    # Try connecting with TLS options for Render
+    client = AsyncIOMotorClient(
+        mongo_url,
+        tls=True,
+        tlsAllowInvalidCertificates=True,
+        serverSelectionTimeoutMS=10000,
+        connectTimeoutMS=10000
+    )
+    
+    # Test connection
+    await client.admin.command('ping')
+    logger.info("✅ MongoDB connected successfully")
+    
+except Exception as e:
+    logger.error(f"❌ MongoDB connection failed: {e}")
+    raise
+
 db = client[os.environ['DB_NAME']]
 fs = AsyncIOMotorGridFSBucket(db)
 
