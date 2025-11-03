@@ -28,6 +28,7 @@ const Orders = () => {
 
   const statusFilters = [
     { label: 'All Orders', value: 'all' },
+    { label: 'No Pattern', value: 'no_pattern' },
     { label: 'Approved', value: 'approved' },
     { label: 'Rejected', value: 'rejected' },
     { label: 'No Action', value: 'no_action' }
